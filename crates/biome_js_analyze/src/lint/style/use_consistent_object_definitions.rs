@@ -148,12 +148,12 @@ impl Rule for UseConsistentObjectDefinitions {
                         let variable_token = identifier_token.name().ok()?.value_token().ok()?;
                         inner_string_text(&variable_token)
                     }
-                    AnyJsExpression::JsFunctionExpression(_function_token) => {
-                        // Functions are always shorthandable
-                        match syntax {
-                            ObjectPropertySyntax::Shorthand => return Some(()),
-                            ObjectPropertySyntax::Explicit => return None,
-                        }
+                    AnyJsExpression::JsFunctionExpression(function) => {
+                        // A shorthand method cannot carry the function's own name: converting
+                        // `b: function c() {}` renames it and drops the inner `c` binding.
+                        return (syntax == ObjectPropertySyntax::Shorthand
+                            && function.id().is_none())
+                        .then_some(());
                     }
                     _ => return None,
                 };

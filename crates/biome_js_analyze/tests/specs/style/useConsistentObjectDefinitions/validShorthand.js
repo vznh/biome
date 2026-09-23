@@ -49,3 +49,11 @@ const validShorthand = {
 
     ...spread,
 };
+
+const namedFunctions = {
+    b: function c() {},
+    recursive: function recursive() { return recursive; },
+    async: async function namedAsync() {},
+    generator: function* namedGenerator() { yield 1; },
+    [computed]: function namedComputed() {},
+};
